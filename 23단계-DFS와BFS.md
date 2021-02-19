@@ -253,8 +253,60 @@ else:
 ##### 단계 7 - 토마토 (7569)
 
 ```python
+from collections import deque
+import sys
+m, n, h = map(int, sys.stdin.readline().rstrip().split())
+tomatos = [[] for _ in range(h)]
+for i in range(h):
+    for _ in range(n):
+        tomatos[i].append(list(map(int, sys.stdin.readline().rstrip().split())))
 
+queue = deque()
+
+for z in range(h):
+    for i in range(n):
+        for j in range(m):
+            if tomatos[z][i][j] == 1:
+                queue.append([z, i, j])
+
+def bfs(queue):
+    dx = [-1, 1, 0, 0]
+    dy = [0, 0, -1, 1]
+    dz = [-1, 1]
+    day = 0
+    while queue:
+        tmp = []
+        while queue:
+            z, x, y = queue.popleft()
+            for hi in range(2):
+                nz = z + dz[hi]
+                if  0 <= nz < h and tomatos[nz][x][y] == 0:
+                    tomatos[nz][x][y] = 1
+                    tmp.append([nz, x, y])
+            for i in range(4):
+                nx, ny = x+dx[i], y+dy[i]
+                if 0 <= nx < n and 0 <= ny < m and tomatos[z][nx][ny] == 0:
+                    tomatos[z][nx][ny] = 1
+                    tmp.append([z, nx, ny])
+        queue += tmp
+        day += 1
+
+    for z in range(h):
+        check = True
+        for i in range(n):
+            for j in range(m):
+                if tomatos[z][i][j] == 0:
+                    check = False
+                    return -1
+    else:
+        return day-1
+
+print(bfs(queue))
 ```
+
+위 토마토 문제의 3차원 버전이다.
+
+위 아래의 z 좌표 값만 준 뒤 확인을 거치면 간단하게 풀 수 있다.
 
 ##### 단계 8 - 숨바꼭질 (1697)
 
